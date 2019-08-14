@@ -11,7 +11,7 @@ from autominy_msgs.msg import SpeedCommand
 
 def publi():
     pub = rospy.Publisher('/actuators/steering', NormalizedSteeringCommand, queue_size=10)
-    pub2 = rospy.Publisher('/actuators/speed', SpeedCommand, queue_size=10)
+    pub2 = rospy.Publisher('/actuators/steering_normalized', SpeedCommand, queue_size=10)
     rospy.init_node('publi', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
