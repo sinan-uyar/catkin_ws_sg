@@ -8,7 +8,7 @@ project(assignment2_publisher_subscriber)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  autominy_msgs
+  autominy_msg
   rospy
 )
 
@@ -69,7 +69,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   autominy_msgs
+#   std_msgs  # Or other packages containing msgs
 # )
 
 ################################################
@@ -104,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES assignment2_publisher_subscriber
-#  CATKIN_DEPENDS autominy_msgs rospy
+#  CATKIN_DEPENDS autominy_msg rospy
 #  DEPENDS system_lib
 )
 

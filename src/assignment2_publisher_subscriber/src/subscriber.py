@@ -1,9 +1,10 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 import rospy
+from autominy_msgs.msg import Speed
 
 
 def callback(data):
-    rospy.loginfo("speed: %f", data)
+    rospy.loginfo("speed: %f", data.value)
     
 def subscriber():
 
@@ -14,7 +15,7 @@ def subscriber():
     # run simultaneously.
     rospy.init_node('subscriber', anonymous=True)
 
-    rospy.Subscriber("/sensors/speed", autominy_msgs/Speed, callback)
+    rospy.Subscriber("/sensors/speed", Speed, callback)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
@@ -22,3 +23,6 @@ def subscriber():
 if __name__ == '__main__':
     subscriber()
 
+
+#autominy 
+#catkinws
