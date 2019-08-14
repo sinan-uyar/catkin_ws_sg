@@ -1,27 +1,28 @@
-#!/usr/bin/env python
-
-
-# publisher according to talker chatter example from tutorial
-# publishes steer value 1.0 and speed value 0.3 m/s wit frequency of 10hz
 import rospy
-import autominy_msgs
+from autominy_msgs.msg import SpeedCommand, NormalizedSteeringCommand
 
-from autominy_msgs.msg import NormalizedSteeringCommand
-from autominy_msgs.msg import SpeedCommand
 
-def publi():
-    pub = rospy.Publisher('/actuators/steering', NormalizedSteeringCommand, queue_size=10)
-    pub2 = rospy.Publisher('/actuators/steering_normalized', SpeedCommand, queue_size=10)
-    rospy.init_node('publi', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    while not rospy.is_shutdown():
-        pub.publish(NormalizedSteeringCommand, 1.0)
-	pub2.publish(SpeedCommand, 0.3)
-        rate.sleep()
+class BasicPublisher:
 
-if __name__ == '__main__':
-    try:
-        publi()
-    except rospy.ROSInterruptException:
-        pass
+    def __init__(self):
+        rospy.init_node("basic_publisher")
+        self.speed_publisher = rospy.Publisher("/actuators/speed", SpeedCommand, queue_size=1)
+        self.steering_publisher = rospy.Publisher("/actuators/steering_normalized", NormalizedSteeringCommand,
+                                                  queue_size=1)
 
+        self.r = rospy.Rate(10)  # 10hz
+
+        while not rospy.is_shutdown():
+            steer_msg = NormalizedSteeringCommand()
+            steer_msg.value = 1.0
+            self.steering_publisher.publish(steer_msg)
+
+            speed_msg = SpeedCommand()
+            speed_msg.value = 0.3
+            self.speed_publisher.publish(speed_msg)
+
+            self.r.sleep()
+
+
+if __name__ == "__main__":
+    BasicPublisher()
