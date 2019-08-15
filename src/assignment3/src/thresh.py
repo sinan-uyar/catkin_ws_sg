@@ -32,28 +32,119 @@ class image_converter:
     cv2.rectangle(cv_image,(0,0),(640,100),(0,0,0),-1)  
     cv2.rectangle(cv_image,(0,0),(220,150),(0,0,0),-1)  
     cv2.rectangle(cv_image,(250,230),(460,350),(0,0,0),-1) 
-    cv2.rectangle(cv_image,(0,350),(640,480),(0,0,0),-1)  
+    cv2.rectangle(cv_image,(0,350),(640,480),(0,0,0),-1)  	
 
-    '''
-    cv2.line(cv_image,(0,200),(640,200),(255,255,255))  
-    cv2.line(cv_image,(0,400),(640,400),(255,255,255),1)  
-    cv2.line(cv_image,(200,0),(200,480),(255,255,255),1)  
-    cv2.line(cv_image,(400,0),(400,480),(255,255,255),1)  
-    cv2.line(cv_image,(600,0),(600,480),(255,255,255),1)
-    '''
+    #x=abs(x)
 
-    '''
-    for y in range(480):
+    cv2.rectangle(cv_image,(256,110),(279,133),(255,255,255)) 
+    cv2.rectangle(cv_image,(407,102),(427,122),(255,255,255))  
+	
+    cv2.rectangle(cv_image,(236,150),(259,175),(255,255,255)) 
+    cv2.rectangle(cv_image,(433,140),(457,162),(255,255,255))  
+
+    cv2.rectangle(cv_image,(190,227),(222,252),(255,255,255)) 
+    cv2.rectangle(cv_image,(485,210),(520,239),(255,255,255)) 
+
+    #cv2.line(cv_image,(320,240),(320,240),(255,255,255),1)  
+    
+
+    xsum11=0
+    ysum11=0
+    counter=0
+    for y in range(111,133):
         y=y+1
-        for x in range(640):
+        for x in range(257,279):
     	    px=cv_image[y,x]
-            
-            rospy.loginfo("x: "+str(x)+" y: "+str(y)+"	"+str(px))
-	    if 
+            if px>=200:
+                xsum11=xsum11+x
+                ysum11=ysum11+y
+                counter=counter+1
             x=x+1
-    '''
-    ret,th1=cv2.threshold(cv_image, 200, 255, cv2.THRESH_BINARY )
+    xsum11=xsum11//counter
+    ysum11=ysum11//counter
 
+    xsum12=0
+    ysum12=0
+    counter=0
+    for y in range(103,122):
+        y=y+1
+        for x in range(408,427):
+    	    px=cv_image[y,x]
+            if px>=200:
+                xsum12=xsum12+x
+                ysum12=ysum12+y
+                counter=counter+1
+            x=x+1
+    xsum12=xsum12//counter
+    ysum12=ysum12//counter
+
+    xsum21=0
+    ysum21=0
+    counter=0
+    for y in range(151,175):
+        y=y+1
+        for x in range(237,259):
+    	    px=cv_image[y,x]
+            if px>=200:
+                xsum21=xsum21+x
+                ysum21=ysum21+y
+                counter=counter+1
+            x=x+1
+    xsum21=xsum21//counter
+    ysum21=ysum21//counter
+
+    xsum22=0
+    ysum22=0
+    counter=0
+    for y in range(141,162):
+        y=y+1
+        for x in range(434,457):
+    	    px=cv_image[y,x]
+            if px>=200:
+                xsum22=xsum22+x
+                ysum22=ysum22+y
+                counter=counter+1
+            x=x+1
+    xsum22=xsum22//counter
+    ysum22=ysum22//counter
+
+    xsum31=0
+    ysum31=0
+    counter=0
+    for y in range(228,252):
+        y=y+1
+        for x in range(191,222):
+    	    px=cv_image[y,x]
+            if px>=200:
+                xsum31=xsum31+x
+                ysum31=ysum31+y
+                counter=counter+1
+            x=x+1
+    xsum31=xsum31//counter
+    ysum31=ysum31//counter
+
+    xsum32=0
+    ysum32=0
+    counter=0
+    for y in range(211,239):
+        y=y+1
+        for x in range(486,520):
+    	    px=cv_image[y,x]
+            if px>=200:
+                xsum32=xsum32+x
+                ysum32=ysum32+y
+                counter=counter+1
+            x=x+1
+    xsum32=xsum32//counter
+    ysum32=ysum32//counter
+
+    ret,th1=cv2.threshold(cv_image, 200, 255, cv2.THRESH_BINARY )
+    
+
+    rospy.loginfo("----------------------------------------------------")
+    rospy.loginfo(str(xsum11)+","+str(ysum11)+"	"+str(xsum12)+","+str(ysum12))
+    rospy.loginfo(str(xsum21)+","+str(ysum21)+"	"+str(xsum22)+","+str(ysum22))
+    rospy.loginfo(str(xsum31)+","+str(ysum31)+"	"+str(xsum32)+","+str(ysum32))
     cv2.imshow("Image window", th1)
     cv2.waitKey(3)
 
