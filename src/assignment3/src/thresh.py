@@ -17,16 +17,6 @@ class image_converter:
 
     self.bridge = CvBridge()
     self.image_sub = rospy.Subscriber("/sensors/camera/infra1/image_rect_raw",Image,self.callback)
-  def Threshold_Demo(val):
-    #0: Binary
-    #1: Binary Inverted
-    #2: Threshold Truncated
-    #3: Threshold to Zero
-    #4: Threshold to Zero Inverted
-    threshold_type = cv.getTrackbarPos(trackbar_type, window_name)
-    threshold_value = cv.getTrackbarPos(trackbar_value, window_name)
-    _, dst = cv.threshold(src_gray, threshold_value, max_binary_value, threshold_type )
-    cv.imshow(window_name, dst)
 
   def callback(self,data):
     try:
@@ -37,12 +27,12 @@ class image_converter:
     (rows,cols,channels) = cv_image.shape
     #if cols > 60 and rows > 60 :
     #  cv2.circle(cv_image, (50,50), 10, 255)
-    cv.threshold(cv_image, threshold_value, max_binary_value, threshold_type )
-    cv2.imshow("Image window", cv_image)
+    ret,th1=cv2.threshold(cv_image, 200, 255, cv2.THRESH_BINARY )
+    cv2.imshow("Image window", th1)
     cv2.waitKey(3)
 
     try:
-      self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
+      self.image_pub.publish(self.bridge.cv2_to_imgmsg(th1, "bgr8"))
     except CvBridgeError as e:
       print(e)
 
