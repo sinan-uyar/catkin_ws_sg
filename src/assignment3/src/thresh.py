@@ -20,19 +20,45 @@ class image_converter:
 
   def callback(self,data):
     try:
-      cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+      cv_image = self.bridge.imgmsg_to_cv2(data, "mono8")
     except CvBridgeError as e:
       print(e)
 
-    (rows,cols,channels) = cv_image.shape
+    #(rows,cols,channels) = cv_image.shape
+    #640x480 !!!
     #if cols > 60 and rows > 60 :
     #  cv2.circle(cv_image, (50,50), 10, 255)
+    #cv2.line(cv_image,(0,100),(400,0),(0,0,0),150)  
+    cv2.rectangle(cv_image,(0,0),(640,100),(0,0,0),-1)  
+    cv2.rectangle(cv_image,(0,0),(220,150),(0,0,0),-1)  
+    cv2.rectangle(cv_image,(250,230),(460,350),(0,0,0),-1) 
+    cv2.rectangle(cv_image,(0,350),(640,480),(0,0,0),-1)  
+
+    '''
+    cv2.line(cv_image,(0,200),(640,200),(255,255,255))  
+    cv2.line(cv_image,(0,400),(640,400),(255,255,255),1)  
+    cv2.line(cv_image,(200,0),(200,480),(255,255,255),1)  
+    cv2.line(cv_image,(400,0),(400,480),(255,255,255),1)  
+    cv2.line(cv_image,(600,0),(600,480),(255,255,255),1)
+    '''
+
+    '''
+    for y in range(480):
+        y=y+1
+        for x in range(640):
+    	    px=cv_image[y,x]
+            
+            rospy.loginfo("x: "+str(x)+" y: "+str(y)+"	"+str(px))
+	    if 
+            x=x+1
+    '''
     ret,th1=cv2.threshold(cv_image, 200, 255, cv2.THRESH_BINARY )
+
     cv2.imshow("Image window", th1)
     cv2.waitKey(3)
 
     try:
-      self.image_pub.publish(self.bridge.cv2_to_imgmsg(th1, "bgr8"))
+      self.image_pub.publish(self.bridge.cv2_to_imgmsg(th1, "mono8"))
     except CvBridgeError as e:
       print(e)
 
