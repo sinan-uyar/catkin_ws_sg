@@ -140,34 +140,55 @@ class image_converter:
     ysum32=ysum32//counter
 
     
-    
     rospy.loginfo("----------------------------------------------------")
-    rospy.loginfo(str(xsum11)+","+str(ysum11)+"	"+str(xsum12)+","+str(ysum12))
-    rospy.loginfo(str(xsum21)+","+str(ysum21)+"	"+str(xsum22)+","+str(ysum22))
-    rospy.loginfo(str(xsum31)+","+str(ysum31)+"	"+str(xsum32)+","+str(ysum32))
+    rospy.loginfo("Assignment 4-4: \n")
+    rospy.loginfo("positions for the center of the markin (x,y): \n\ntop left= ("+str(xsum11)+","+str(ysum11)+")"+"	"+"top right= "+"("+str(xsum12)+","+str(ysum12)+")"+
+                  "\ntop left= ("+str(xsum21)+","+str(ysum21)+")"+"	"+"top right= "+"("+str(xsum22)+","+str(ysum22)+")"+
+                  "\ntop left= ("+str(xsum31)+","+str(ysum31)+")"+"	"+"top right= "+"("+str(xsum32)+","+str(ysum32)+")"+"\n")
     
 
    
     intrinsic=np.array([ [383.7944641113281, 0.0              , 322.3056945800781 ],
                          [0.0              , 383.7944641113281, 241.67051696777344],
-                         [0.0              , 0.0              , 1.0               ] ])
+                         [0.0              , 0.0              , 1.0               ]],dtype=np.float32)
     distortion=np.array([0, 0, 0, 0, 0])
-    imagep=np.array([ [xsum31, xsum32, xsum21, xsum22, xsum11, xsum12],
-                      [ysum31, ysum32, ysum21, ysum22, ysum11, ysum12] ])
-    worldp=np.array([ [0.5, 0.5, 0.8, 0.8, 1.1, 1.1 ],
-                      [0.2,-0.2, 0.2,-0.2, 0.2,-0.2 ], 
-                      [0  , 0  , 0  , 0  , 0  , 0   ] ], dtype=np.float32)
-    #retval, rvec, tvec= cv2.solvePnP(worldp,imagep,intrinsic,distortion)
+    imagep=np.array([ [xsum31, ysum31],
+                      [xsum32, ysum32],
+                      [xsum21, ysum21],
+                      [xsum22, ysum22], 
+                      [xsum11, ysum11],
+                      [xsum12, ysum12] ], dtype=np.float32)
+    worldp=np.array([ [0.5,0.2,0.0],
+                      [0.5,-0.2,0.0],
+                      [0.8,0.2,0.0],
+                      [0.8,-0.2,0.0], 
+                      [1.1,0.2,0.0], 
+                      [1.1,-0.2,0.0] ], dtype=np.float64)
+    retval, rvec, tvec= cv2.solvePnP(worldp,imagep,intrinsic,distortion)
+
+    rospy.loginfo("Assignment 4-6: \n")
+        
+    rospy.loginfo("solvePnP results: \n\nretval= "+str(retval)+"\n\nrvec= \n"+str(rvec)+"\n\ntvec= \n"+str(tvec)+"\n")    
+        
+    rospy.loginfo("Assignment 4-7: \n")
+
+    dst, jacobian= cv2.Rodrigues(rvec)
     
-    rospy.loginfo(" ")    
-    rospy.loginfo("solvePnP results: ")    
-    #rospy.loginfo("retval= "+str(retval)+",	rvec= "+str(rvec)+",	tvec= "+str(tvec))    
-        
-        
-        
+    rospy.loginfo("rotation matrix: \n\n"+str(dst)+"\n")    
     
-    cv2.imshow("Image window", th1)
-    cv2.waitKey(3)
+    dst=np.append(dst,tvec,axis =1)
+    dst=np.append(dst,[[0.0,0.0,0.0,1.0]],axis=0)
+    
+    rospy.loginfo("transformation matrix: \n\n"+str(dst)+"\n")    
+    
+    dst=np.transpose(dst)
+
+    rospy.loginfo("inverse matrix: \n\n"+str(dst)+"\n")    
+    
+    #cv2.imshow("Image window", th1)
+    #cv2.waitKey(3)
+	
+    
 
     try:
       self.image_pub.publish(self.bridge.cv2_to_imgmsg(th1, "mono8"))
