@@ -48,6 +48,9 @@ class image_converter:
     #cv2.line(cv_image,(320,240),(320,240),(255,255,255),1)  
     
     #xsum11 ist x avrg von top left, xsum32 ist x avrg von bottom right
+
+    ret,th1=cv2.threshold(cv_image, 200, 255, cv2.THRESH_BINARY )
+
     xsum11=0
     ysum11=0
     counter=0
@@ -138,17 +141,24 @@ class image_converter:
     xsum32=xsum32//counter
     ysum32=ysum32//counter
 
-    ret,th1=cv2.threshold(cv_image, 200, 255, cv2.THRESH_BINARY )
     
-    '''
+    
     rospy.loginfo("----------------------------------------------------")
     rospy.loginfo(str(xsum11)+","+str(ysum11)+"	"+str(xsum12)+","+str(ysum12))
     rospy.loginfo(str(xsum21)+","+str(ysum21)+"	"+str(xsum22)+","+str(ysum22))
     rospy.loginfo(str(xsum31)+","+str(ysum31)+"	"+str(xsum32)+","+str(ysum32))
-    '''
+    
    
-
-    #cv2.solvePnP()
+    intrinsic=np.array([ [383.7944641113281, 0.0              , 322.3056945800781 ],
+                         [0.0              , 383.7944641113281, 241.67051696777344],
+                         [0.0              , 0.0              , 1.0               ] ])
+    distortion=np.array([0, 0, 0, 0, 0])
+    imagep=np.array([ [xsum31, xsum32, xsum21, xsum22, xsum11, xsum12],
+                      [ysum31, ysum32, ysum21, ysum22, ysum11, ysum12] ])
+    worldp=np.array([ [0.5, 0.5, 0.8, 0.8, 1.1, 1.1 ],
+                      [0.2,-0.2, 0.2,-0.2, 0.2,-0.2 ], 
+                      [0  , 0  , 0  , 0  , 0  , 0   ] ], dtype=np.float32)
+    # retval, rvec, tvec= cv2.solvePnP(worldp,imagep,intrinsic,distortion)
 
     cv2.imshow("Image window", th1)
     cv2.waitKey(3)
