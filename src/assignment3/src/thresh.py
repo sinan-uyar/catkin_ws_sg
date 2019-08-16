@@ -25,17 +25,15 @@ class image_converter:
     except CvBridgeError as e:
       print(e)
 
-    #(rows,cols,channels) = cv_image.shape
     #640x480 !!!
-    #if cols > 60 and rows > 60 :
-    #  cv2.circle(cv_image, (50,50), 10, 255)
-    #cv2.line(cv_image,(0,100),(400,0),(0,0,0),150)  
+    
+    #alles ausser Feldmarkierungen schwarz
     cv2.rectangle(cv_image,(0,0),(640,100),(0,0,0),-1)  
     cv2.rectangle(cv_image,(0,0),(220,150),(0,0,0),-1)  
     cv2.rectangle(cv_image,(250,230),(460,350),(0,0,0),-1) 
     cv2.rectangle(cv_image,(0,350),(640,480),(0,0,0),-1)  	
 
-
+    #in 6 bereiche einteilen (rechtecke um Markierungen, um werte fuer bereiche zu erhalten)
     cv2.rectangle(cv_image,(256,110),(279,133),(255,255,255)) 
     cv2.rectangle(cv_image,(407,102),(427,122),(255,255,255))  
 	
@@ -45,11 +43,11 @@ class image_converter:
     cv2.rectangle(cv_image,(190,227),(222,252),(255,255,255)) 
     cv2.rectangle(cv_image,(485,210),(520,239),(255,255,255)) 
 
-    #cv2.line(cv_image,(320,240),(320,240),(255,255,255),1)  
-    
-    #xsum11 ist x avrg von top left, xsum32 ist x avrg von bottom right
 
     ret,th1=cv2.threshold(cv_image, 200, 255, cv2.THRESH_BINARY )
+
+    #xsum11 ist x avrg von top left, xsum32 ist x avrg von bottom right
+    #fuer jeden bereich alle pixel durchgehen und deren durchschnittliche x- und y-Koordinate herausfinden
 
     xsum11=0
     ysum11=0
@@ -148,6 +146,7 @@ class image_converter:
     rospy.loginfo(str(xsum21)+","+str(ysum21)+"	"+str(xsum22)+","+str(ysum22))
     rospy.loginfo(str(xsum31)+","+str(ysum31)+"	"+str(xsum32)+","+str(ysum32))
     
+
    
     intrinsic=np.array([ [383.7944641113281, 0.0              , 322.3056945800781 ],
                          [0.0              , 383.7944641113281, 241.67051696777344],
@@ -158,8 +157,15 @@ class image_converter:
     worldp=np.array([ [0.5, 0.5, 0.8, 0.8, 1.1, 1.1 ],
                       [0.2,-0.2, 0.2,-0.2, 0.2,-0.2 ], 
                       [0  , 0  , 0  , 0  , 0  , 0   ] ], dtype=np.float32)
-    # retval, rvec, tvec= cv2.solvePnP(worldp,imagep,intrinsic,distortion)
-
+    #retval, rvec, tvec= cv2.solvePnP(worldp,imagep,intrinsic,distortion)
+    
+    rospy.loginfo(" ")    
+    rospy.loginfo("solvePnP results: ")    
+    #rospy.loginfo("retval= "+str(retval)+",	rvec= "+str(rvec)+",	tvec= "+str(tvec))    
+        
+        
+        
+    
     cv2.imshow("Image window", th1)
     cv2.waitKey(3)
 
