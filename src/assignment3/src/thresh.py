@@ -6,6 +6,7 @@ import roslib
 import sys
 import rospy
 import cv2
+import numpy as np
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
@@ -34,7 +35,6 @@ class image_converter:
     cv2.rectangle(cv_image,(250,230),(460,350),(0,0,0),-1) 
     cv2.rectangle(cv_image,(0,350),(640,480),(0,0,0),-1)  	
 
-    #x=abs(x)
 
     cv2.rectangle(cv_image,(256,110),(279,133),(255,255,255)) 
     cv2.rectangle(cv_image,(407,102),(427,122),(255,255,255))  
@@ -47,7 +47,7 @@ class image_converter:
 
     #cv2.line(cv_image,(320,240),(320,240),(255,255,255),1)  
     
-
+    #xsum11 ist x avrg von top left, xsum32 ist x avrg von bottom right
     xsum11=0
     ysum11=0
     counter=0
@@ -140,11 +140,16 @@ class image_converter:
 
     ret,th1=cv2.threshold(cv_image, 200, 255, cv2.THRESH_BINARY )
     
-
+    '''
     rospy.loginfo("----------------------------------------------------")
     rospy.loginfo(str(xsum11)+","+str(ysum11)+"	"+str(xsum12)+","+str(ysum12))
     rospy.loginfo(str(xsum21)+","+str(ysum21)+"	"+str(xsum22)+","+str(ysum22))
     rospy.loginfo(str(xsum31)+","+str(ysum31)+"	"+str(xsum32)+","+str(ysum32))
+    '''
+   
+
+    #cv2.solvePnP()
+
     cv2.imshow("Image window", th1)
     cv2.waitKey(3)
 
