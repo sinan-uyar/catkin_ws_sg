@@ -186,7 +186,7 @@ class image_converter:
     rospy.loginfo("inverse matrix: \n\n"+str(dst)+"\n")    
     
     #cv2.imshow("Image window", th1)
-    #cv2.waitKey(3)
+    cv2.waitKey(3)
 	
     
 
