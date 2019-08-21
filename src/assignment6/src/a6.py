@@ -99,7 +99,7 @@ class image_converter:
 	    m=(y2best-y1best)*1.0 / (x2best-x1best)
 	    n=y1best-m*x1best
 	    
-	    cv2.line(th1,(0,int(n)),(640,int(m*640+n)),(100,100,100),20)
+	    cv2.line(th1,(0,int(n)),(640,int(m*640+n)),(100,100,100),30)
             x7+=1
     	    print(str(x7)+". line: "+"m= "+str(m)+" n= "+str(n))
 
