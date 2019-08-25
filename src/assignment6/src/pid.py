@@ -14,13 +14,14 @@ from autominy_msgs.msg import NormalizedSteeringCommand
 from autominy_msgs.msg import SpeedCommand
 def nothing(x):
     pass
-'''
+
 img = np.zeros((300,512,3), np.uint8)
 cv2.namedWindow('image')
 cv2.createTrackbar('kp','image',0,20,nothing)
 cv2.createTrackbar('ki','image',0,100,nothing)
 cv2.createTrackbar('kd','image',0,100,nothing)
-'''
+cv2.createTrackbar('speed','image',-50,50,nothing)
+
 
 class image_converter: 
  
@@ -39,15 +40,16 @@ class image_converter:
     self.error_acc+=error
     time_current=rospy.Time.now()
     time_difference=(time_current-self.time_last).to_sec()
+    print(self.time_last)
     time_last=time_current
     #kp=cv2.getTrackbarPos('kp','image')
     kp=0
-    #ki=cv2.getTrackbarPos('ki','image')/100
+    #ki=cv2.getTrackbarPos('ki','image')
     ki=0
     #kd=cv2.getTrackbarPos('kd','image')
-    kd=10
+    kd=17
     u=kp*error+kd*(error/time_difference)+ ki*self.error_acc*time_difference
-    print(u)
+    #print(u)
     return u
 
   def callback(self,raw_msgs):
@@ -61,9 +63,10 @@ class image_converter:
     steering.value=self.pid(euler[2])
     speed=SpeedCommand()
     speed.value=0.5
+    #speed.value=cv2.getTrackbarPos('speed','image')/100
     #print(str(steering.value))
-    #cv2.imshow('image',img)
-    #cv2.waitKey(3)
+    cv2.imshow('image',img)
+    cv2.waitKey(3)
     self.x4.publish(speed)
 
     try:
