@@ -104,7 +104,6 @@ class image_converter:
       rate.sleep()
 
   def callback_closest(self,data):
-    print(data)
     cl=self.closest( (data.point.x, data.point.y) )
     m=create_marker(3)
     m.type=m.SPHERE
