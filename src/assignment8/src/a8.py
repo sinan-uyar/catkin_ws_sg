@@ -14,6 +14,8 @@ from cv_bridge import CvBridge, CvBridgeError
 from scipy import interpolate
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Point
+
+#diese bibliothek muss gedownloaded werden !!
 from scipy.spatial import distance
 
 
@@ -58,8 +60,9 @@ class image_converter:
     self.lane2orig=np.load("/home/sinanu/lane2.npy")
     self.lane1 = self.lane1orig[[0, 100, 150, 209, 259, 309, 350, 409, 509, 639, 750, 848, 948, 1028, 1148, 1276], :]
     self.lane2 = self.lane2orig[[0, 50, 100, 150, 209, 400, 600, 738, 800, 850, 900, 949, 1150, 1300, 1476], :]
-
     self.marker_pub = rospy.Publisher("/marker",Marker)
+    closest_sub = rospy.Subscriber("/clicked_point",PointStamped,self.callback_closest)
+    lookahead_sub = rospy.Subscriber("/clicked_point",PointStamped,self.callback_lookahead)
 
 
   def spline(self):
@@ -91,8 +94,6 @@ class image_converter:
     self.array1=points1
     self.array2=points2
 
-    closest_sub = rospy.Subscriber("/clicked_point",PointStamped,self.callback_closest)
-    lookahead_sub = rospy.Subscriber("/clicked_point",PointStamped,self.callback_lookahead)
 
     rate = rospy.Rate(10) # 10hz
     
@@ -103,6 +104,7 @@ class image_converter:
       rate.sleep()
 
   def callback_closest(self,data):
+    print(data)
     cl=self.closest( (data.point.x, data.point.y) )
     m=create_marker(3)
     m.type=m.SPHERE
@@ -222,11 +224,26 @@ class image_converter:
       elif distance.euclidean(point, (array[m-1].x,array[m-1].y) ) < dst:
         r=m-1
       else:
+        error=self.find_opposite_point_index(m,array)
         #ueberpruefen, ob der punkt auf der gegenueberliegenden seite naeher dran ist (wenn man in der mitte klickt)
-        if distance.euclidean(point, (array[m].x,array[m].y) ) < distance.euclidean(point, (array[m-(len(array)-1)//2].x,array[m-(len(array)-1)//2].y) ):
-          return( (array[m].x, array[m].y, dst, m) )
-        return( (array[m-(len(array)-1)//2].x, array[m-(len(array)-1)//2].y, dst, m-(len(array)-1)//2) )
-
+        if distance.euclidean(point, (array[m].x,array[m].y) ) > distance.euclidean(point, (array[error].x,array[error].y) ):
+          return( (array[error].x, array[error].y, dst, error) )
+        return( (array[m].x, array[m].y, dst, m) )
+        
+  def find_opposite_point_index(self, m, array):
+    dst=0
+    if ( m> ( (len(array)-1) - (len(array)-1) //6) ) or ( m< ( (len(array)-1) //2 - (len(array)-1) //6) ):
+      if  m> ( (len(array)-1) - (len(array)-1) //6) :
+        dst= ( (len(array)-1) - (len(array)-1) //6) - m
+      else:
+        dst= -1*( (len(array)-1) //6 + m)
+    else:
+      dst= ( (len(array)-1) - (len(array)-1) //6) - m
+    if ( ( (len(array)-1) - (len(array)-1) //6)+dst ) > (len(array)-1) :
+      opposite= ( ( (len(array)-1) - (len(array)-1) //6)+dst ) - (len(array)-1) 
+    else:
+      opposite= ( (len(array)-1) - (len(array)-1) //6)+dst 
+    return(opposite)
 
 
 
