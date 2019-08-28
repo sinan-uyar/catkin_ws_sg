@@ -215,7 +215,6 @@ class image_converter:
         m=(l+r)//2
         r=m-1
         m=(l+r)//2
-        
       dst=distance.euclidean(point, (array[m].x,array[m].y) )
 
       if distance.euclidean(point, (array[m+1].x,array[m+1].y) ) < dst:
